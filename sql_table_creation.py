@@ -76,9 +76,9 @@ create table if not exists social_determinants(
 );
 """
 engine.execute(table_Patients)
-db_gcp.execute(table_Medications)
-db_gcp.execute(table_Treatments_Procedures)
-db_gcp.execute(table_Conditions)
-db_gcp.execute(table_SDoH)
+engine.execute(table_Medications)
+engine.execute(table_Treatments_Procedures)
+engine.execute(table_Conditions)
+engine.execute(table_SDoH)
 
 gcp_tables = db_gcp.table_names()
