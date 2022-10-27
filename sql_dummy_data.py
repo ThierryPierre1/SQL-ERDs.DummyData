@@ -17,3 +17,27 @@ connection_string_gcp = f'mysql+pymysql://{GCP_MYSQL_USER}:{GCP_MYSQL_PASSWORD}@
 db_gcp = create_engine(connection_string_gcp)
 
 print(db_gcp.table_names())
+
+fake = Faker()
+
+### fake data for patients
+fake_patients = [
+    {
+        #keep just the first 8 characters of the uuid
+        'mrn': str(uuid.uuid4())[:8], 
+        'first_name':fake.first_name(), 
+        'last_name':fake.last_name(),
+        'zip_code':fake.zipcode(),
+        'dob':(fake.date_between(start_date='-90y', end_date='-20y')).strftime("%Y-%m-%d"),
+        'gender': fake.random_element(elements=('M', 'F')),
+        'contact_mobile':fake.phone_number(),
+        'contact_home':fake.phone_number()
+    } for x in range(50)]
+
+insertQuery = "INSERT INTO production_patients (mrn, first_name, last_name, zip_code, dob, gender, contact_mobile, contact_home) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+
+for index, row in df_fake_patients.iterrows():
+    # db_azure.execute(insertQuery, (row['mrn'], row['first_name'], row['last_name'], row['zip_code'], row['dob'], row['gender'], row['contact_mobile'], row['contact_home']))
+    db_gcp_2.execute(insertQuery, (row['mrn'], row['first_name'], row['last_name'], row['zip_code'], row['dob'], row['gender'], row['contact_mobile'], row['contact_home']))
+    print("inserted row: ", index)
+
